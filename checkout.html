@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checkout – VAKAADHA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Base styles -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Checkout-specific styles -->
+  <link rel="stylesheet" href="checkout.css" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="navbar">
+    <div class="logo"><img src="./Images/logo.jpeg (1).jpg" alt="VAKAADHA Logo" /></div>
+    <input type="checkbox" id="menu-toggle" />
+    <label for="menu-toggle" class="menu-icon">&#9776;</label>
+    <nav class="nav-links">
+      <a href="./index.html"><i class="fas fa-house"></i></a>
+      <a href="./wishlist.html"><i class="fas fa-heart"></i><span class="wishlist-count" id="wishlistCount">0</span></a>
+      <a href="./cart.html"><i class="fas fa-shopping-cart"></i><span id="cartCount">0</span></a>
+      <a href="./profile.html"><i class="fas fa-user"></i></a>
+    </nav>
+  </header>
+
+  <main class="checkout-container">
+    <h2>Checkout</h2>
+
+    <!-- Stepper -->
+    <div class="stepper">
+      <div class="step active" data-step="address">1. Address</div>
+      <div class="step" data-step="payment">2. Payment</div>
+      <div class="step" data-step="confirmation">3. Confirmation</div>
+    </div>
+
+    <!-- Layout -->
+    <div class="checkout-grid">
+      <!-- Left column: Address / Payment -->
+      <div class="checkout-left">
+        <!-- Address Selection -->
+        <section id="addressSection" class="card">
+          <div class="card-header">
+            <h3>Shipping Address</h3>
+          </div>
+          <div class="card-body">
+            <div id="addressList" class="address-list"></div>
+
+            <div class="address-actions">
+              <button id="addAddressBtn" class="btn btn-secondary">+ Add New Address</button>
+            </div>
+
+            <div id="addressFormContainer" class="address-form" style="display:none;"></div>
+
+            <div class="actions">
+              <button id="continueToPayment" class="btn btn-primary">Continue to Payment</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Payment Section -->
+        <section id="paymentSection" class="card" style="display:none;">
+          <div class="card-header">
+            <h3>Payment Method</h3>
+          </div>
+          <div class="card-body">
+            <div id="paymentMethods" class="payment-list"></div>
+
+            <div class="payment-actions">
+              <button id="backToAddress" class="btn btn-secondary">← Back</button>
+              <button id="completePayment" class="btn btn-success">Place Order</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Confirmation -->
+        <section id="confirmationSection" class="card" style="display:none;">
+          <div class="card-header">
+            <h3>✅ Order Placed Successfully!</h3>
+          </div>
+          <div class="card-body" id="orderConfirmationDetails"></div>
+          <div class="actions">
+            <a class="btn btn-primary" href="orders.html">View My Orders</a>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right column: Order Summary -->
+      <aside class="checkout-right">
+        <section class="card">
+          <div class="card-header">
+            <h3>Order Summary</h3>
+          </div>
+          <div class="card-body" id="orderSummaryContent">
+            <!-- Filled by checkout.js -->
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 VAKAADHA. All rights reserved.</p>
+  </footer>
+
+  <!-- Auth bootstrap -->
+  <script src="auth.js"></script>
+  <!-- Checkout Logic -->
+  <script src="checkout.js"></script>
+</body>
+</html>
