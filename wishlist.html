@@ -12,51 +12,59 @@
 </head>
 <body>
 
-<header class="navbar">
-  <a href="index.html" class="logo">VAKAADHA</a>
+  <!-- HEADER -->
+  <header class="navbar">
+    <a href="index.html" class="logo">VAKAADHA</a>
 
-  <input type="checkbox" id="menu-toggle"/>
-  <label for="menu-toggle" class="menu-icon">&#9776;</label>
+    <input type="checkbox" id="menu-toggle"/>
+    <label for="menu-toggle" class="menu-icon">&#9776;</label>
 
-  <nav class="nav-links">
-    <a href="./index.html" aria-label="Home"><i class="fas fa-house"></i></a>
-    <a href="./wishlist.html" aria-label="Wishlist">
-      <i class="fas fa-heart"></i><span class="wishlist-count" id="wishlistCount">0</span>
-    </a>
-    <a href="./cart.html" aria-label="Cart">
-      <i class="fas fa-shopping-cart"></i><span id="cartCount">0</span>
-    </a>
-    
-    <div class="dropdown">
-      <a href="./profile.html" aria-label="Profile">
-        <i class="fas fa-user"></i> <span id="user-display"></span>
+    <nav class="nav-links">
+      <a href="./index.html" aria-label="Home"><i class="fas fa-house"></i></a>
+      <a href="./wishlist.html" aria-label="Wishlist">
+        <i class="fas fa-heart"></i><span class="wishlist-count" id="wishlistCount">0</span>
       </a>
-      <div class="dropdown-content">
-        <a href="profile.html" id="auth-link" style="font-weight: bold;">Login / Signup</a>
-        <hr class="dropdown-divider"/> 
-        <a href="#">Orders</a>
-        <a href="#">Wishlist</a>
-        <a href="#">Gift Cards</a>
-        <a href="#">Contact Us</a>
-        <a href="#">Saved Cards</a>
-        <a href="#">Saved VPA</a>
-        <a href="#">Saved Addresses</a>
-        <div id="logged-in-links" class="hidden">
-          <hr class="dropdown-divider"/>
-          <a href="profile.html">Settings</a>
-          <a href="orders.html">My Orders</a>
-          <a href="wishlist.html">Wishlist</a>
-          <a href="addresses.html">Addresses</a>
-          <a href="#" id="logout">Logout</a>
+      <a href="./cart.html" aria-label="Cart">
+        <i class="fas fa-shopping-cart"></i><span id="cartCount">0</span>
+      </a>
+      <!--<a href="./profile.html" aria-label="Profile"><i class="fas fa-user"></i></a> -->
+      
+      <div class="dropdown">
+        <a href="./profile.html" aria-label="Profile">
+          
+          <i class="fas fa-user"></i> <span id="user-display"></span>
+        </a>
+        <div class="dropdown-content">
+          <a href="profile.html" id="auth-link" style="font-weight: bold;">Login / Signup</a>
+          <hr class="dropdown-divider"/> 
+
+          <!-- Static Placeholders -->
+          <a href="#">Orders</a>
+          <a href="#">Wishlist</a>
+          <a href="#">Gift Cards</a>
+          <a href="#">Contact Us</a>
+          <a href="#">Saved Cards</a>
+          <a href="#">Saved VPA</a>
+          <a href="#">Saved Addresses</a>
+
+          <!-- Logged-in View -->
+          <div id="logged-in-links" class="hidden">
+            <hr class="dropdown-divider"/>
+            <a href="profile.html">Settings</a>
+            <a href="orders.html">My Orders</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="addresses.html">Addresses</a>
+            <a href="#" id="logout">Logout</a>
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
-</header>
+
+    </nav>
+  </header>
 
 
   <!-- Main Wishlist -->
-  <main class="wishlist-container">
+  <main class="wishlist-section">
     <h2>Your Wishlist</h2>
 
     <!-- Guest prompt -->
@@ -103,10 +111,8 @@
 </div>
 
   <!-- JS -->
-  <script type="module" src="api/client.js"></script>
-  <script src="auth.js"></script>
+  <!-- <script type="module" src="api/client.js"></script>
+  <script src="auth.js"></script> -->
   <script type="module" src="wishlist.js"></script>
 </body>
 </html>
-
-

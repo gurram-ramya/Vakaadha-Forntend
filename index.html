@@ -77,12 +77,16 @@
   <!-- FEATURED PRODUCTS -->
   <section class="featured-products" data-aos="fade-up">
     <h2>Top Picks for You</h2>
-
     <!-- First row -->
     <div class="product-row">
       <div class="product-card">
         <div class="product-actions">
-          <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+          <button class="wishlist-btn" onclick="addToWishlist({
+  id: 1,
+  name: 'Teddy Bear | Maroon Oversized Tee',
+  price: 1299,
+  image: './Images/teddy back maroon.jpg'
+})"><i class="far fa-heart"></i></button>
           <button class="share-btn"><i class="fas fa-share-alt"></i></button>
         </div>
         <img src="./Images/teddy back maroon.jpg" alt="T-Shirt 1"/>
@@ -105,7 +109,12 @@
 
       <div class="product-card">
         <div class="product-actions">
-          <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+          <button class="wishlist-btn" onclick="addToWishlist({
+  id: 2,
+  name: 'Black Panther | Black Oversized Tee',
+  price: 1299,
+  image: './Images/black black panther back.jpg'
+})"><i class="far fa-heart"></i></button>
           <button class="share-btn"><i class="fas fa-share-alt"></i></button>
         </div>
         <img src="./Images/black black panther back.jpg" alt="T-Shirt 2"/>
@@ -121,14 +130,24 @@
         </div>
 
         <div class="card-actions">
-          <button class="btn add-to-cart">Add to Cart</button>
+          <button class="btn add-to-cart" onclick="addToCart({
+  id: 2,
+  name: 'Black Panther | Black Oversized Tee',
+  price: 1299,
+  image: './Images/black black panther back.jpg'
+})">Add to Cart</button>
           <button class="btn buy-now">Buy Now</button>
         </div>
       </div>
 
       <div class="product-card">
         <div class="product-actions">
-          <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+          <button class="wishlist-btn" onclick="addToWishlist({
+  id: 3,
+  name: 'Porsche | Maroon Oversized Tee',
+  price: 1399,
+  image: './Images/porsche maroon back.jpg'
+})"><i class="far fa-heart"></i></button>
           <button class="share-btn"><i class="fas fa-share-alt"></i></button>
         </div>
         <img src="./Images/porsche maroon back.jpg" alt="T-Shirt 3"/>
@@ -151,7 +170,12 @@
 
       <div class="product-card">
         <div class="product-actions">
-          <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+          <button class="wishlist-btn" onclick="addToWishlist({
+  id: 4,
+  name: 'Street Mode On | Black Oversized Tee',
+  price: 1249,
+  image: './Images/black street mode front.jpg'
+})"><i class="far fa-heart"></i></button>
           <button class="share-btn"><i class="fas fa-share-alt"></i></button>
         </div>
         <img src="./Images/black street mode front.jpg" alt="T-Shirt 4"/>
@@ -267,6 +291,9 @@
         </div>
       </div>
     </div>
+    <div class="more-btn-wrapper" data-aos="fade-up" data-aos-delay="300">
+      <a href="collections.html" class="more-btn">View More T-Shirts →</a>
+    </div>
   </section>
 
     <div class="contact-policy">
@@ -307,29 +334,6 @@
   </section>
   </div>
 
-  <!-- INFO SECTION -->
-  <!-- <section class="info-section" data-aos="fade-up"> -->
-    <!-- Follow Us -->
-    <!-- <div class="info-right">
-      <h2>Follow Us On</h2>
-      <div class="social-icons">
-        <a href="https://x.com" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i></a>
-        <a href="https://instagram.com" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-        <a href="https://facebook.com" target="_blank" rel="noopener"><i class="fab fa-facebook"></i></a>
-        <a href="https://youtube.com" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
-        <a href="https://wa.me/7893153335" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
-        <a href="tel:+917893153335" target="_blank" rel="noopener" style="font-size: 28px;"><i class="fa-solid fa-phone"></i></a>
-        <a href="mailto:contact.vakaadha@gmail.com"><i class="fa-solid fa-envelope"></i></a>
-      </div>
-    </div> -->
-
-    <!-- About Us -->
-    <!-- <div class="info-left">
-      <div class="about-buttons">
-        <button type="button" onclick="openModal('aboutModal')">About Us</button>
-      </div>
-    </div>
-  </section> -->
 
   <!-- About Modal -->
   <div id="aboutModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="aboutTitle">
@@ -400,5 +404,7 @@
       }
     });
   </script>
+  <script src="./script.js"></script>
+  <script src="./wishlist.js"></script>
 </body>
 </html>
