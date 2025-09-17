@@ -1,15 +1,16 @@
-<!-- frontend/addresses.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Address Book • VAKAADHA</title>
-  <!-- <link rel="stylesheet" href="profile.css" /> -->
-  <link rel="stylesheet" href="./address.css">
+  <title>Payment • VAKAADHA</title>
+  <link rel="stylesheet" href="./payment.css"/> <!-- Reuse same palette -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Megrim&display=swap" rel="stylesheet"/>
   <script src="./navbar.js"></script>
+  <style>
+    
+  </style>
 </head>
 <body>
   <!-- HEADER -->
@@ -62,48 +63,38 @@
     </nav>
   </header>
 
-  <main class="profile-container">
-    <h2>Select or Add Address</h2>
+  <!-- MAIN -->
+  <main class="payment-container">
+    <h2>Checkout</h2>
 
-    <!-- Existing addresses list -->
-    <div id="address-list"></div>
+    <!-- Selected Address -->
+    <div class="section">
+      <h3>Delivery Address</h3>
+      <div id="deliveryAddress"><p>No address selected</p></div>
+    </div>
 
-    <!-- Add new address button -->
-    <button id="addAddressBtn">+ Add New Address</button>
+    <!-- Order Summary -->
+    <div class="section">
+      <h3>Order Summary</h3>
+      <div id="orderSummary"></div>
+      <p><strong>Total: ₹<span id="orderTotal">0</span></strong></p>
+    </div>
 
-    <!-- Address form (hidden initially) -->
-    <form id="addressForm" style="display:none; margin-top:20px;">
-      <h3>Add Address</h3>
-      <label>
-        Full Name:
-        <input type="text" id="addrName" required />
-      </label><br><br>
-      <label>
-        Street:
-        <input type="text" id="addrStreet" required />
-      </label><br><br>
-      <label>
-        City:
-        <input type="text" id="addrCity" required />
-      </label><br><br>
-      <label>
-        ZIP:
-        <input type="text" id="addrZip" required />
-      </label><br><br>
-      <button type="submit">Save Address</button>
-      <button type="button" id="cancelForm">Cancel</button>
-    </form>
-    
-    <button id="proceedToPayment">Proceed to Payment</button>
+    <!-- Payment Options -->
+    <div class="section">
+      <h3>Payment Method</h3>
+      <div class="payment-methods">
+        <label><input type="radio" name="payment" value="UPI" checked/> UPI</label>
+        <label><input type="radio" name="payment" value="Card"/> Debit/Credit Card</label>
+        <label><input type="radio" name="payment" value="NetBanking"/> Net Banking</label>
+        <label><input type="radio" name="payment" value="COD"/> Cash on Delivery</label>
+      </div>
+    </div>
+
+    <button id="placeOrder">Place Order</button>
   </main>
 
-
-  <!-- <script type="module" src="api/client.js"></script> -->
-  <script type="module" src="./addresses.js"></script>
-  <script>
-    document.getElementById("proceedToPayment").addEventListener("click", () => {
-      window.location.href = "payment.html";
-    });
-  </script>
+  <script src="payment.js"></script>
+  <!-- <script src="./script.js"></script> -->
 </body>
 </html>

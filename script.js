@@ -1,17 +1,3 @@
-// function increment(button) {
-//   const countSpan = button.parentElement.querySelector(".qty-count");
-//   let value = parseInt(countSpan.textContent);
-//   countSpan.textContent = value + 1;
-// }
-
-// function decrement(button) {
-//   const countSpan = button.parentElement.querySelector(".qty-count");
-//   let value = parseInt(countSpan.textContent);
-//   if (value > 0) {
-//     countSpan.textContent = value - 1;
-//   }
-// }
-
   // Close modals on outside click
   window.onclick = function (event) {
     const aboutModal = document.getElementById('aboutModal');
@@ -37,73 +23,243 @@
     }
   }
 
-  // Optional: Close modal on clicking outside
-  // window.onclick = function (event) {
-  //   document.querySelectorAll(".modal").forEach(modal => {
-  //     if (event.target === modal) {
-  //       modal.style.display = "none";
-  //     }
-  //   });
-  // };
-
-//   document.addEventListener("DOMContentLoaded", () => {
-//     firebase.auth().onAuthStateChanged(async user => {
-//       if (user) {
-//         updateWishlistCount();  // ✅ Call here
-//       }
-//     });
-//   });
-
-
-// document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-//   button.addEventListener('click', async () => {
-//     const user = firebase.auth().currentUser;
-//     if (!user) {
-//       alert('Please login first to add to cart.');
-//       return;
-//     }
-
-//     const userId = user.email;
-//     const productId = button.dataset.productId;
-//     const productSize = button.dataset.productSize;
-
-//     if (!productSize) {
-//       alert("Please select a size before adding to cart.");
-//       return;
-//     }
-
-//     try {
-//       const response = await fetch('http://127.0.0.1:5000/cart', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//           user_id: userId,
-//           product_id: productId,
-//           size: productSize
-//         })
-//       });
-
-//       const result = await response.json();
-//       alert(result.message || "Added to cart!");
-//     } catch (err) {
-//       console.error('Error adding to cart:', err);
-//       alert("Something went wrong!");
-//     }
-//   });
-// });
-
-
 /* ===========================
    Wishlist and Add to Cart Functionality
    =========================== */
+/** script.js **/
 
+// (() => {
+//   const CART_KEY = "vakaadha_cart_v1";
+//   const WISHLIST_KEY = "vakaadha_wishlist_v1";
+
+//   // ==============================
+//   // Helpers
+//   // ==============================
+//   function read(key) {
+//     try { return JSON.parse(localStorage.getItem(key) || "[]"); }
+//     catch { return []; }
+//   }
+//   function write(key, val) { localStorage.setItem(key, JSON.stringify(val || [])); }
+//   function safeParsePrice(str) { return parseInt(String(str).replace(/[^0-9]/g, ""), 10) || 0; }
+
+//   // ==============================
+//   // Navbar counts
+//   // ==============================
+//   function updateCounts() {
+//     const cart = read(CART_KEY);
+//     const wishlist = read(WISHLIST_KEY);
+//     const cartCount = cart.reduce((sum, p) => sum + (Number(p.qty) || 1), 0);
+//     const wishlistCount = wishlist.length;
+//     const cartEl = document.getElementById("cartCount");
+//     const wishEl = document.getElementById("wishlistCount");
+//     if (cartEl) cartEl.textContent = cartCount;
+//     if (wishEl) wishEl.textContent = wishlistCount;
+//   }
+//   window.updateCounts = updateCounts;
+
+//   // ==============================
+//   // Toast
+//   // ==============================
+//   function showToast(message, color = "#00c4a7") {
+//     let container = document.getElementById("toast-container");
+//     if (!container) {
+//       container = document.createElement("div");
+//       container.id = "toast-container";
+//       container.style.position = "fixed";
+//       container.style.top = "20px";
+//       container.style.right = "20px";
+//       container.style.zIndex = "9999";
+//       document.body.appendChild(container);
+//     }
+//     const toast = document.createElement("div");
+//     toast.textContent = message;
+//     toast.style.background = "#fff";
+//     toast.style.borderLeft = `6px solid ${color}`;
+//     toast.style.padding = "8px 12px";
+//     toast.style.marginTop = "8px";
+//     toast.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
+//     container.appendChild(toast);
+//     setTimeout(() => toast.remove(), 2400);
+//   }
+
+//   // ==============================
+//   // Extract product info from DOM
+//   // ==============================
+//   function extractProduct(card, trigger = null) {
+//     const d = trigger?.dataset || {};
+//     return {
+//       id: String(d.id ?? card?.dataset.productId ?? Date.now()),
+//       name: (d.name ?? card?.querySelector("h3")?.textContent ?? "Unnamed").trim(),
+//       price: safeParsePrice(d.price ?? card?.querySelector(".price")?.textContent ?? "0"),
+//       image: d.image ?? card?.querySelector("img")?.src ?? ""
+//     };
+//   }
+
+//   // ==============================
+//   // Add to Wishlist
+//   // ==============================
+//   function addToWishlist(product) {
+//     if (!product) return;
+//     const wishlist = read(WISHLIST_KEY);
+//     if (!wishlist.find(p => p.id === product.id)) {
+//       wishlist.push(product);
+//       write(WISHLIST_KEY, wishlist);
+//       updateCounts();
+//       showToast("❤️ Added to wishlist");
+//     } else {
+//       showToast("Already in wishlist", "#ff9800");
+//     }
+//   }
+//   window.addToWishlist = addToWishlist;
+
+//   // ==============================
+//   // Add to Cart
+//   // ==============================
+//   function addToCart(product, trigger = null) {
+//     if (!product) return;
+
+//     const normalized = {
+//       id: String(product.id ?? Date.now()),
+//       name: product.name ?? "Unnamed",
+//       price: safeParsePrice(product.price ?? 0),
+//       image: product.image ?? "",
+//       qty: 1
+//     };
+
+//     if (trigger) {
+//       const card = trigger.closest(".product-card");
+//       const activeSize = card?.querySelector(".size-btn.active");
+//       if (!activeSize) {
+//         showToast("⚠️ Please select a size", "#ff9800");
+//         return;
+//       }
+//       normalized.size = activeSize.textContent.trim();
+//     }
+
+//     const cart = read(CART_KEY);
+//     const existing = cart.find(p => p.id === normalized.id && p.size === normalized.size);
+//     if (existing) existing.qty = (Number(existing.qty) || 1) + 1;
+//     else cart.push(normalized);
+
+//     write(CART_KEY, cart);
+//     updateCounts();
+//     showToast(`🛒 Added ${normalized.name}${normalized.size ? ` (${normalized.size})` : ""} to cart`);
+//   }
+//   window.addToCart = (product) => addToCart(product, event?.target || null);
+
+//   // ==============================
+//   // Wishlist page render
+//   // ==============================
+//   function renderWishlistPage() {
+//     const container = document.getElementById("wishlist-items");
+//     if (!container) return;
+
+//     const wishlist = read(WISHLIST_KEY);
+//     if (!wishlist.length) {
+//       container.innerHTML = `<p>Your wishlist is empty. <a href="index.html">Shop now</a></p>`;
+//       return;
+//     }
+
+//     container.innerHTML = wishlist.map((p, i) => `
+//       <div class="wishlist-card">
+//         <img src="${p.image || 'images/placeholder.png'}" alt="${p.name}">
+//         <h3>${p.name}</h3>
+//         <p>₹${p.price}</p>
+//         <div class="wishlist-actions">
+//           <button class="move-to-cart-btn" data-index="${i}">Move to Cart</button>
+//           <button class="remove-from-wishlist-btn" data-index="${i}">Remove</button>
+//         </div>
+//       </div>
+//     `).join("");
+//   }
+//   window.renderWishlistPage = renderWishlistPage;
+
+//   // ==============================
+//   // Event delegation
+//   // ==============================
+//   document.addEventListener("click", (e) => {
+//     // size buttons
+//     const sizeBtn = e.target.closest(".size-btn");
+//     if (sizeBtn) {
+//       const card = sizeBtn.closest(".product-card");
+//       card.querySelectorAll(".size-btn").forEach(b => b.classList.remove("active"));
+//       sizeBtn.classList.add("active");
+//       return;
+//     }
+
+//     // wishlist
+//     const wishBtn = e.target.closest(".wishlist-btn");
+//     if (wishBtn) {
+//       const card = wishBtn.closest(".product-card");
+//       const product = extractProduct(card, wishBtn);
+//       addToWishlist(product);
+//       const icon = wishBtn.querySelector("i");
+//       if (icon) { icon.classList.remove("far"); icon.classList.add("fas"); }
+//       return;
+//     }
+
+//     // add to cart
+//     const cartBtn = e.target.closest(".add-to-cart, .add-to-cart-btn");
+//     if (cartBtn) {
+//       const card = cartBtn.closest(".product-card");
+//       const product = extractProduct(card, cartBtn);
+//       addToCart(product, cartBtn);
+//       return;
+//     }
+
+//     // move to cart
+//     const moveBtn = e.target.closest(".move-to-cart-btn");
+//     if (moveBtn) {
+//       const idx = +moveBtn.dataset.index;
+//       const wishlist = read(WISHLIST_KEY);
+//       if (idx < 0 || idx >= wishlist.length) return;
+
+//       const item = wishlist.splice(idx, 1)[0];
+//       write(WISHLIST_KEY, wishlist);
+
+//       const cart = read(CART_KEY);
+//       const found = cart.find(p => String(p.id) === String(item.id) && p.size === item.size);
+//       if (found) found.qty = (Number(found.qty) || 1) + 1;
+//       else cart.push({ ...item, qty: 1 });
+//       write(CART_KEY, cart);
+
+//       updateCounts();
+//       renderWishlistPage();
+//       showToast("Moved to cart");
+//       return;
+//     }
+
+//     // remove from wishlist
+//     const removeBtn = e.target.closest(".remove-from-wishlist-btn");
+//     if (removeBtn) {
+//       const idx = +removeBtn.dataset.index;
+//       const wishlist = read(WISHLIST_KEY);
+//       if (idx < 0 || idx >= wishlist.length) return;
+//       wishlist.splice(idx, 1);
+//       write(WISHLIST_KEY, wishlist);
+//       updateCounts();
+//       renderWishlistPage();
+//       showToast("Removed from wishlist", "#ff4d4d");
+//       return;
+//     }
+//   });
+
+//   // ==============================
+//   // Init
+//   // ==============================
+//   document.addEventListener("DOMContentLoaded", () => {
+//     updateCounts();
+//     renderWishlistPage();
+//   });
+
+// })();
+
+// script.js
 (() => {
-  const KEY_WISHLIST = "vakaadha_wishlist_v1";
-  const KEY_CART = "vakaadha_cart_v1";
+  const CART_KEY = "vakaadha_cart_v1";
+  const WISHLIST_KEY = "vakaadha_wishlist_v1";
 
-  // Helpers
+  // ---------- helpers ----------
   function read(key) {
     try { return JSON.parse(localStorage.getItem(key) || "[]"); }
     catch { return []; }
@@ -111,27 +267,15 @@
   function write(key, val) { localStorage.setItem(key, JSON.stringify(val || [])); }
   function safeParsePrice(str) { return parseInt(String(str).replace(/[^0-9]/g, ""), 10) || 0; }
 
-  // Update navbar counters
-  function updateCounts() {
-    const cart = read(KEY_CART);
-    const wishlist = read(KEY_WISHLIST);
-    const cartTotal = cart.reduce((sum, p) => sum + (Number(p.qty) || 1), 0);
-    const wishlistTotal = wishlist.length;
-    const cartEl = document.getElementById("cartCount");
-    const wishEl = document.getElementById("wishlistCount");
-    if (cartEl) cartEl.textContent = cartTotal;
-    if (wishEl) wishEl.textContent = wishlistTotal;
-  }
-
-  // Toast
+  // ---------- toast ----------
   function showToast(message, color = "#00c4a7") {
     let container = document.getElementById("toast-container");
     if (!container) {
       container = document.createElement("div");
       container.id = "toast-container";
       container.style.position = "fixed";
-      container.style.right = "20px";
       container.style.top = "20px";
+      container.style.right = "20px";
       container.style.zIndex = "9999";
       document.body.appendChild(container);
     }
@@ -146,43 +290,79 @@
     setTimeout(() => toast.remove(), 2400);
   }
 
-  // Build product object from DOM product card
+  // ---------- extract product info from a product-card DOM node ----------
   function extractProduct(card, trigger = null) {
     const d = trigger?.dataset || {};
+    const name = (d.name ?? card?.querySelector("h3")?.textContent ?? "Unnamed").trim();
+    const price = safeParsePrice(d.price ?? card?.querySelector(".price")?.textContent ?? "0");
+    const image = d.image ?? card?.querySelector("img")?.src ?? "";
+
+    // create stable id from name+price+image
+    const baseId = `${name}-${price}-${image}`;
     return {
-      id: String(d.id ?? card?.dataset.productId ?? Date.now()),
-      name: (d.name ?? card?.querySelector("h3")?.textContent ?? "Unnamed").trim(),
-      price: safeParsePrice(d.price ?? card?.querySelector(".price")?.textContent ?? "0"),
-      image: d.image ?? card?.querySelector("img")?.src ?? ""
+      id: baseId, // stable unique ID for same product
+      name,
+      price,
+      image
     };
   }
 
-  // --- SIZE SELECTION ---
-  document.addEventListener("click", (e) => {
-    const sizeBtn = e.target.closest(".size-btn");
-    if (sizeBtn) {
-      const card = sizeBtn.closest(".product-card");
-      // remove active class from other size buttons in this card
-      card.querySelectorAll(".size-btn").forEach(b => b.classList.remove("active"));
-      // mark this one as active
-      sizeBtn.classList.add("active");
+
+  // ---------- unified "update" (calls navbar's update function if present) ----------
+  function updateCountsFallback() {
+    // fallback local update (only used if navbar.js wasn't loaded)
+    const cart = read(CART_KEY);
+    const wishlist = read(WISHLIST_KEY);
+    const cartCount = Array.isArray(cart) ? cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0) : 0;
+    const wishlistCount = Array.isArray(wishlist) ? wishlist.length : 0;
+    const cartEl = document.getElementById("cartCount");
+    const wishEl = document.getElementById("wishlistCount");
+    if (cartEl) cartEl.textContent = cartCount;
+    if (wishEl) wishEl.textContent = wishlistCount;
+  }
+
+  function updateNavbarCountsSafe() {
+    if (typeof window.updateNavbarCounts === "function") window.updateNavbarCounts();
+    else updateCountsFallback();
+  }
+
+  // ---------- Add to wishlist ----------
+  function addToWishlist(product) {
+    if (!product) return;
+    const wishlist = read(WISHLIST_KEY);
+
+    const size = product.size ? String(product.size).trim() : "";
+
+    // Check if same product+size already exists
+    const exists = wishlist.find(
+      p => p.id === product.id && (p.size || "") === size
+    );
+
+    if (exists) {
+      showToast("⚠️ Already in wishlist", "#ff9800");
       return;
     }
-  });
 
-  // override addToCart to capture size
+    wishlist.push({ ...product, size });
+    write(WISHLIST_KEY, wishlist);
+    updateNavbarCountsSafe();
+    showToast("❤️ Added to wishlist");
+  }
+
+
+  // ---------- Add to cart (enforces size selection when trigger exists) ----------
   function addToCart(product, trigger = null) {
     if (!product) return;
 
-    // normalize
     const normalized = {
       id: String(product.id ?? Date.now()),
       name: product.name ?? "Unnamed",
       price: safeParsePrice(product.price ?? 0),
-      image: product.image ?? ""
+      image: product.image ?? "",
+      qty: 1
     };
 
-    // find size from card (if any)
+    // if a trigger (button inside product card) is supplied, require size selection
     if (trigger) {
       const card = trigger.closest(".product-card");
       const activeSize = card?.querySelector(".size-btn.active");
@@ -193,111 +373,25 @@
       normalized.size = activeSize.textContent.trim();
     }
 
-    const cart = read(KEY_CART);
+    // if no trigger we still allow adding (useful for programmatic adds), but it's strongly recommended to provide a trigger
+    const cart = read(CART_KEY);
 
-    // check if same product + same size already exists
-    const existing = cart.find(
-      p => String(p.id) === normalized.id && p.size === normalized.size
-    );
+    const existing = cart.find(p => String(p.id) === normalized.id && (p.size || "") === (normalized.size || ""));
+    if (existing) existing.qty = (Number(existing.qty) || 1) + 1;
+    else cart.push(normalized);
 
-    if (existing) {
-      existing.qty = (Number(existing.qty) || 1) + 1;
-    } else {
-      cart.push({ ...normalized, qty: 1 });
-    }
-
-    write(KEY_CART, cart);
-    updateCounts();
-    showToast(`🛒 Added ${normalized.size} to cart`);
+    write(CART_KEY, cart);
+    updateNavbarCountsSafe();
+    showToast(`🛒 Added ${normalized.name}${normalized.size ? ` (${normalized.size})` : ""} to cart`);
   }
-  window.addToCart = (product) => addToCart(product, event?.target || null);
+  // expose a safe global method — prefer event-delegation flow where trigger is available
+  if (!window.addToCart) window.addToCart = (product) => addToCart(product, null);
 
-  // Public function: add to wishlist (exposed)
-  function addToWishlist(product) {
-    if (!product) return;
-    const normalized = {
-      id: String(product.id ?? Date.now()),
-      name: product.name ?? "Unnamed",
-      price: safeParsePrice(product.price ?? 0),
-      image: product.image ?? ""
-    };
-    const wishlist = read(KEY_WISHLIST);
-    if (!wishlist.find(p => String(p.id) === normalized.id)) {
-      wishlist.push(normalized);
-      write(KEY_WISHLIST, wishlist);
-      updateCounts();
-      showToast("❤️ Added to wishlist");
-    } else {
-      showToast("Already in wishlist", "#ff9800");
-    }
-  }
-  window.addToWishlist = addToWishlist;
-
-  // Event Delegation for buttons inside product cards or wishlist page
-  document.addEventListener("click", (e) => {
-    // wishlist button (button element inside product card)
-    const wishBtn = e.target.closest(".wishlist-btn");
-    if (wishBtn) {
-      const card = wishBtn.closest(".product-card");
-      const product = extractProduct(card, wishBtn);
-      addToWishlist(product);
-      // toggle icon (if there is an <i class="far fa-heart">)
-      const icon = wishBtn.querySelector("i");
-      if (icon) { icon.classList.remove("far"); icon.classList.add("fas"); }
-      return;
-    }
-
-    // add-to-cart button(s)
-    const cartBtn = e.target.closest(".add-to-cart, .add-to-cart-btn");
-    if (cartBtn) {
-      const card = cartBtn.closest(".product-card");
-      const product = extractProduct(card, cartBtn);
-      addToCart(product);
-      return;
-    }
-
-    // move-to-cart on wishlist page
-    const moveBtn = e.target.closest(".move-to-cart-btn");
-    if (moveBtn) {
-      const idx = +moveBtn.dataset.index;
-      const wishlist = read(KEY_WISHLIST);
-      if (idx < 0 || idx >= wishlist.length) return;
-      const item = wishlist.splice(idx, 1)[0];
-      write(KEY_WISHLIST, wishlist);
-
-      // add to cart similarly
-      const cart = read(KEY_CART);
-      const found = cart.find(p => String(p.id) === String(item.id));
-      if (found) found.qty = (Number(found.qty) || 1) + 1;
-      else cart.push({ ...item, qty: 1 });
-      write(KEY_CART, cart);
-
-      updateCounts();
-      renderWishlistPage();
-      showToast("Moved to cart");
-      return;
-    }
-
-    // remove-from-wishlist on wishlist page
-    const removeBtn = e.target.closest(".remove-from-wishlist-btn");
-    if (removeBtn) {
-      const idx = +removeBtn.dataset.index;
-      const wishlist = read(KEY_WISHLIST);
-      if (idx < 0 || idx >= wishlist.length) return;
-      wishlist.splice(idx, 1);
-      write(KEY_WISHLIST, wishlist);
-      updateCounts();
-      renderWishlistPage();
-      showToast("Removed from wishlist", "#ff4d4d");
-      return;
-    }
-  });
-
-  // Render wishlist page if present
+  // ---------- Wishlist page renderer (works if wishlist section present) ----------
   function renderWishlistPage() {
     const container = document.getElementById("wishlist-items");
     if (!container) return;
-    const wishlist = read(KEY_WISHLIST);
+    const wishlist = read(WISHLIST_KEY);
     if (!wishlist.length) {
       container.innerHTML = `<p>Your wishlist is empty. <a href="index.html">Shop now</a></p>`;
       return;
@@ -314,13 +408,138 @@
       </div>
     `).join("");
   }
+  // expose so wishlist page can call it
+  window.renderWishlistPage = renderWishlistPage;
 
-  // On load
+// ---------- Buy Now ----------
+function buyNow(product, trigger = null) {
+  if (!product) return;
+
+  const normalized = {
+    id: String(product.id ?? Date.now()),
+    name: product.name ?? "Unnamed",
+    price: safeParsePrice(product.price ?? 0),
+    image: product.image ?? "",
+    qty: 1
+  };
+
+  // require size if coming from product card
+  if (trigger) {
+    const card = trigger.closest(".product-card");
+    const activeSize = card?.querySelector(".size-btn.active");
+    if (!activeSize) {
+      showToast("⚠️ Please select a size", "#ff9800");
+      return;
+    }
+    normalized.size = activeSize.textContent.trim();
+  }
+
+  // Save this product only in sessionStorage
+  sessionStorage.setItem("buyNowItem", JSON.stringify(normalized));
+
+  // Redirect to addresses
+  window.location.href = "addresses.html";
+}
+
+window.buyNow = (product) => buyNow(product, event?.target || null);
+
+
+  // ---------- event delegation for product / wishlist actions ----------
+  document.addEventListener("click", (e) => {
+    // size select
+    const sizeBtn = e.target.closest(".size-btn");
+    if (sizeBtn) {
+      const card = sizeBtn.closest(".product-card");
+      if (!card) return;
+      card.querySelectorAll(".size-btn").forEach(b => b.classList.remove("active"));
+      sizeBtn.classList.add("active");
+      return;
+    }
+
+    // wishlist button inside card
+    const wishBtn = e.target.closest(".wishlist-btn");
+    if (wishBtn) {
+      const card = wishBtn.closest(".product-card");
+      const product = extractProduct(card, wishBtn);
+
+      // check if already in wishlist
+      const wishlist = read(WISHLIST_KEY);
+      const exists = wishlist.find(p => p.id === product.id);
+
+      const icon = wishBtn.querySelector("i");
+
+      if (exists) {
+        showToast("⚠️ Already in wishlist", "#ff9800");
+        if (icon) { icon.classList.remove("far"); icon.classList.add("fas"); }
+      } else {
+        addToWishlist(product);
+        if (icon) { icon.classList.remove("far"); icon.classList.add("fas"); }
+      }
+      return;
+    }
+
+
+    // add-to-cart buttons
+    const cartBtn = e.target.closest(".add-to-cart, .add-to-cart-btn");
+    if (cartBtn) {
+      const card = cartBtn.closest(".product-card");
+      const product = extractProduct(card, cartBtn);
+      // addToCart will check size if trigger is provided
+      addToCart(product, cartBtn);
+      return;
+    }
+
+    // buy now button
+    const buyBtn = e.target.closest(".buy-now");
+    if (buyBtn) {
+      const card = buyBtn.closest(".product-card");
+      const product = extractProduct(card, buyBtn);
+      buyNow(product, buyBtn);
+      return;
+    }
+
+
+    // wishlist page: move -> cart
+    const moveBtn = e.target.closest(".move-to-cart-btn");
+    if (moveBtn) {
+      const idx = +moveBtn.dataset.index;
+      const wishlist = read(WISHLIST_KEY);
+      if (idx < 0 || idx >= wishlist.length) return;
+      const item = wishlist.splice(idx, 1)[0];
+      write(WISHLIST_KEY, wishlist);
+
+      const cart = read(CART_KEY);
+      const found = cart.find(p => String(p.id) === String(item.id) && (p.size || "") === (item.size || ""));
+      if (found) found.qty = (Number(found.qty) || 1) + 1;
+      else cart.push({ ...item, qty: 1 });
+
+      write(CART_KEY, cart);
+      updateNavbarCountsSafe();
+      renderWishlistPage();
+      showToast("Moved to cart");
+      return;
+    }
+
+    // wishlist page: remove
+    const removeBtn = e.target.closest(".remove-from-wishlist-btn");
+    if (removeBtn) {
+      const idx = +removeBtn.dataset.index;
+      const wishlist = read(WISHLIST_KEY);
+      if (idx < 0 || idx >= wishlist.length) return;
+      wishlist.splice(idx, 1);
+      write(WISHLIST_KEY, wishlist);
+      updateNavbarCountsSafe();
+      renderWishlistPage();
+      showToast("Removed from wishlist", "#ff4d4d");
+      return;
+    }
+  });
+
+  // ---------- init ----------
   document.addEventListener("DOMContentLoaded", () => {
-    updateCounts();
+    updateNavbarCountsSafe();
     renderWishlistPage();
   });
 
-  // Expose updateCounts globally in case other scripts call it
-  window.updateCounts = updateCounts;
 })();
+

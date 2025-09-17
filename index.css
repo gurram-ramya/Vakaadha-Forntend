@@ -1219,3 +1219,54 @@ body {
   color: white;
   border-radius: 4px;
 }
+
+
+/* ==============================
+   Toast Notifications
+   ============================== */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#toast-container .toast {
+  min-width: 220px;
+  max-width: 300px;
+  background: #fff;
+  color: #333;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  border-left: 6px solid #00c4a7; /* default accent */
+  animation: slideIn 0.3s ease, fadeOut 0.5s ease 2s forwards;
+  opacity: 0.95;
+}
+
+/* Slide in animation */
+@keyframes slideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 0.95;
+  }
+}
+
+/* Fade out animation */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(120%);
+  }
+}

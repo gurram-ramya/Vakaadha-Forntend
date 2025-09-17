@@ -104,310 +104,282 @@
 // ==============================
 // CART.JS - Clean Version
 // ==============================
+/** cart.js **/
 
-document.addEventListener("DOMContentLoaded", () => {
-  renderCart();
-  updateCartCount();
-  updateWishlistCount();
-});
+// (() => {
+//   const CART_KEY = "vakaadha_cart_v1";
 
-// ==============================
-// Render Cart
-// ==============================
-function renderCart() {
-  const cartItemsContainer = document.getElementById("cartItems");
-  const cartSummary = document.getElementById("cartSummary");
+//   function readCart() {
+//     try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+//     catch { return []; }
+//   }
 
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+//   function writeCart(cart) {
+//     localStorage.setItem(CART_KEY, JSON.stringify(cart));
+//   }
 
-  if (cart.length === 0) {
-    cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
-    cartSummary.innerHTML = "";
-    updateCartCount();
-    return;
+//   function updateCartCount() {
+//     const cart = readCart();
+//     const count = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+//     const el = document.getElementById("cartCount");
+//     if (el) el.textContent = count;
+//   }
+
+//   function renderCart() {
+//     const container = document.getElementById("cartItems");
+//     const summary = document.getElementById("cartSummary");
+//     const cart = readCart();
+
+//     if (!container || !summary) return;
+
+//     if (cart.length === 0) {
+//       container.innerHTML = "<p>Your cart is empty.</p>";
+//       summary.innerHTML = "";
+//       updateCartCount();
+//       return;
+//     }
+
+//     container.innerHTML = "";
+//     let total = 0;
+
+//     cart.forEach((item, index) => {
+//       if (!item.qty || item.qty < 1) item.qty = 1;
+//       total += item.price * item.qty;
+
+//       const card = document.createElement("div");
+//       card.classList.add("cart-card");
+//       card.innerHTML = `
+//         <img src="${item.image || 'images/placeholder.png'}" alt="${item.name}">
+//         <div class="cart-details">
+//           <h3>${item.name}</h3>
+//           ${item.size ? `<p>Size: ${item.size}</p>` : ""}
+//           <p>₹${item.price}</p>
+//           <div class="qty-controls">
+//             <button class="qty-decrement">-</button>
+//             <span>${item.qty}</span>
+//             <button class="qty-increment">+</button>
+//           </div>
+//           <button class="remove-cart">Remove</button>
+//         </div>
+//       `;
+
+//       // increment
+//       card.querySelector(".qty-increment").addEventListener("click", () => {
+//         item.qty++;
+//         writeCart(cart);
+//         renderCart();
+//       });
+
+//       // decrement
+//       card.querySelector(".qty-decrement").addEventListener("click", () => {
+//         if (item.qty > 1) item.qty--;
+//         else cart.splice(index, 1);
+//         writeCart(cart);
+//         renderCart();
+//       });
+
+//       // remove
+//       card.querySelector(".remove-cart").addEventListener("click", () => {
+//         cart.splice(index, 1);
+//         writeCart(cart);
+//         renderCart();
+//       });
+
+//       container.appendChild(card);
+//     });
+
+//     summary.innerHTML = `<h3>Total: ₹${total}</h3><button class="btn-checkout">Proceed to Checkout</button>`;
+//     updateCartCount();
+//   }
+
+//   document.addEventListener("DOMContentLoaded", () => {
+//     renderCart();
+//   });
+
+// })();
+
+
+// cart.js
+(function () {
+  const CART_KEY = "vakaadha_cart_v1";
+  const CHECKOUT_KEY = "checkout_items";
+
+  function readCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+    catch { return []; }
+  }
+  function writeCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
   }
 
-  cartItemsContainer.innerHTML = "";
-  let total = 0;
-
-  cart.forEach((item, index) => {
-    total += item.price * item.quantity;
-
-    const card = document.createElement("div");
-    card.classList.add("cart-card");
-    card.innerHTML = `
-      <img src="${item.image || 'images/placeholder.png'}" alt="${item.name}">
-      <h3>${item.name} ${item.size ? `(${item.size})` : ""}</h3>
-      <p>₹${item.price}</p>
-      <div class="qty-controls">
-        <button class="qty-decrement">-</button>
-        <span>${item.quantity}</span>
-        <button class="qty-increment">+</button>
-      </div>
-      <button class="remove-cart">Remove</button>
-    `;
-
-    // Increment
-    card.querySelector(".qty-increment").addEventListener("click", () => {
-      item.quantity++;
-      localStorage.setItem("cart", JSON.stringify(cart));
-      renderCart();
-    });
-
-    // Decrement
-    card.querySelector(".qty-decrement").addEventListener("click", () => {
-      if (item.quantity > 1) {
-        item.quantity--;
-      } else {
-        cart.splice(index, 1);
-      }
-      localStorage.setItem("cart", JSON.stringify(cart));
-      renderCart();
-    });
-
-    // Remove
-    card.querySelector(".remove-cart").addEventListener("click", () => {
-      cart.splice(index, 1);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      renderCart();
-    });
-
-    cartItemsContainer.appendChild(card);
-  });
-
-  cartSummary.innerHTML = `
-    <h3>Total: ₹${total}</h3>
-    <button class="btn-checkout">Proceed to Checkout</button>
-  `;
-
-  updateCartCount();
-}
-
-// ==============================
-// CART COUNT (Navbar)
-// ==============================
-function updateCartCount() {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-  document.getElementById("cartCount").textContent = count;
-}
-
-// ==============================
-// WISHLIST COUNT (Navbar)
-// ==============================
-function updateWishlistCount() {
-  const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-  document.getElementById("wishlistCount").textContent = wishlist.length;
-}
-// ==============================
-// CART.JS - Fixed Version
-// ==============================
-
-document.addEventListener("DOMContentLoaded", () => {
-  renderCart();
-  updateCartCount();
-  updateWishlistCount();
-});
-
-// ==============================
-// Render Cart
-// ==============================
-function renderCart() {
-  const cartItemsContainer = document.getElementById("cartItems");
-  const cartSummary = document.getElementById("cartSummary");
-
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  if (cart.length === 0) {
-    cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
-    cartSummary.innerHTML = "";
-    updateCartCount();
-    return;
+  function updateNavbarCountsSafe() {
+    if (typeof window.updateNavbarCounts === "function") {
+      window.updateNavbarCounts();
+    } else {
+      const cart = readCart();
+      const cartEl = document.getElementById("cartCount");
+      if (cartEl) cartEl.textContent = Array.isArray(cart) ? cart.reduce((s, i) => s + (i.qty || 1), 0) : 0;
+    }
   }
 
-  cartItemsContainer.innerHTML = "";
-  let total = 0;
+  function renderCart() {
+    const container = document.getElementById("cartItems");
+    const summary = document.getElementById("cartSummary");
+    const cart = readCart();
 
-  cart.forEach((item, index) => {
-    // ✅ Ensure quantity always starts at 1
-    if (!item.quantity || item.quantity < 1) {
-      item.quantity = 1;
+    if (!container || !summary) return;
+
+    if (!cart.length) {
+      container.innerHTML = "<p>Your cart is empty.</p>";
+      summary.innerHTML = "";
+      updateNavbarCountsSafe();
+      return;
     }
 
-    total += item.price * item.quantity;
+    container.innerHTML = "";
+    let total = 0;
 
-    const card = document.createElement("div");
-    card.classList.add("cart-card");
-    card.innerHTML = `
-      <img src="${item.image || 'images/placeholder.png'}" alt="${item.name}">
-      <h3>${item.name} ${item.size ? `(${item.size})` : ""}</h3>
-      <p>₹${item.price}</p>
-      <div class="qty-controls">
-        <button class="qty-decrement">-</button>
-        <span>${item.quantity}</span>
-        <button class="qty-increment">+</button>
-      </div>
-      <button class="remove-cart">Remove</button>
-    `;
+    cart.forEach((item, index) => {
+      if (!item.qty || item.qty < 1) item.qty = 1;
 
-    // Increment
-    card.querySelector(".qty-increment").addEventListener("click", () => {
-      item.quantity++;
-      localStorage.setItem("cart", JSON.stringify(cart));
-      renderCart();
-    });
-
-    // Decrement
-    card.querySelector(".qty-decrement").addEventListener("click", () => {
-      if (item.quantity > 1) {
-        item.quantity--;
-      } else {
-        cart.splice(index, 1);
-      }
-      localStorage.setItem("cart", JSON.stringify(cart));
-      renderCart();
-    });
-
-    // Remove
-    card.querySelector(".remove-cart").addEventListener("click", () => {
-      cart.splice(index, 1);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      renderCart();
-    });
-
-    cartItemsContainer.appendChild(card);
-  });
-
-  // ✅ Save cart back after fixing quantity defaults
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  cartSummary.innerHTML = `
-    <h3>Total: ₹${total}</h3>
-    <button class="btn-checkout">Proceed to Checkout</button>
-  `;
-
-  updateCartCount();
-}
-
-// ==============================
-// CART COUNT (Navbar)
-// ==============================
-function updateCartCount() {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0); // ✅ default 1
-  document.getElementById("cartCount").textContent = count;
-}
-
-// ==============================
-// WISHLIST COUNT (Navbar)
-// ==============================
-function updateWishlistCount() {
-  const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-  document.getElementById("wishlistCount").textContent = wishlist.length;
-}
-
-// ==============================
-// Keys
-// ==============================
-const CART_KEY = "vakaadha_cart_v1";
-const WISHLIST_KEY = "vakaadha_wishlist_v1";
-
-// ==============================
-// Render Cart
-// ==============================
-function renderCart() {
-  const cartItemsContainer = document.getElementById("cartItems");
-  const cartSummary = document.getElementById("cartSummary");
-
-  let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-
-  if (cart.length === 0) {
-    cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
-    cartSummary.innerHTML = "";
-    updateCartCount();
-    return;
-  }
-
-  cartItemsContainer.innerHTML = "";
-  let total = 0;
-
-  cart.forEach((item, index) => {
-    // ✅ Ensure quantity always starts at 1
-    if (!item.quantity || item.quantity < 1) {
-      item.quantity = 1;
-    }
-
-    total += item.price * item.quantity;
-
-    const card = document.createElement("div");
-    card.classList.add("cart-card");
-    card.innerHTML = `
-      <img src="${item.image || 'images/placeholder.png'}" alt="${item.name}">
-      <div class="cart-details">
-        <h3>${item.name}</h3>
-        ${item.size ? `<p class="cart-size">Size: ${item.size}</p>` : ""}
-        <p class="cart-price">₹${item.price}</p>
-        <div class="qty-controls">
-          <button class="qty-decrement">-</button>
-          <span>${item.quantity}</span>
-          <button class="qty-increment">+</button>
+      const card = document.createElement("div");
+      card.classList.add("cart-card");
+      card.innerHTML = `
+        <input type="checkbox" class="cart-select" data-index="${index}" />
+        <img src="${item.image || 'images/placeholder.png'}" alt="${item.name}">
+        <div class="cart-details">
+          <h3>${item.name}</h3>
+          ${item.size ? `<p>Size: ${item.size}</p>` : ""}
+          <p>₹${item.price}</p>
+          <div class="qty-controls">
+            <button class="qty-decrement">-</button>
+            <span class="qty-value">${item.qty}</span>
+            <button class="qty-increment">+</button>
+          </div>
+          <button class="remove-cart">Remove</button>
         </div>
-        <button class="remove-cart">Remove</button>
-      </div>
-    `;
+      `;
 
-    // Increment
-    card.querySelector(".qty-increment").addEventListener("click", () => {
-      item.quantity++;
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
-      renderCart();
-    });
+      // increment
+      card.querySelector(".qty-increment").addEventListener("click", () => {
+        item.qty++;
+        writeCart(cart);
+        renderCart();
+      });
 
-    // Decrement
-    card.querySelector(".qty-decrement").addEventListener("click", () => {
-      if (item.quantity > 1) {
-        item.quantity--;
-      } else {
+      // decrement
+      card.querySelector(".qty-decrement").addEventListener("click", () => {
+        if (item.qty > 1) item.qty--;
+        else cart.splice(index, 1);
+        writeCart(cart);
+        renderCart();
+      });
+
+      // remove
+      card.querySelector(".remove-cart").addEventListener("click", () => {
         cart.splice(index, 1);
+        writeCart(cart);
+        renderCart();
+      });
+
+      container.appendChild(card);
+    });
+
+    // --- Update summary with only selected items ---
+    function updateSummary() {
+      const selectedCheckboxes = container.querySelectorAll(".cart-select:checked");
+      let total = 0;
+      const selectedItems = [];
+
+      selectedCheckboxes.forEach(cb => {
+        const idx = parseInt(cb.dataset.index, 10);
+        const item = cart[idx];
+        if (item) {
+          total += (item.price || 0) * (item.qty || 1);
+          selectedItems.push(item);
+        }
+      });
+
+      summary.innerHTML = `
+        <h3>Total: ₹${total}</h3>
+        <button class="btn-checkout" ${selectedItems.length ? "" : "disabled"}>Proceed to Checkout</button>
+      `;
+
+      // cart.js
+    const checkoutBtn = document.querySelector(".btn-checkout");
+    checkoutBtn.addEventListener("click", () => {
+      const container = document.getElementById("cartItems");
+      const selectedEls = container.querySelectorAll(".cart-select:checked");
+      if (!selectedEls.length) {
+        alert("Please select at least one product to checkout.");
+        return;
       }
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
-      renderCart();
+
+      const cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+      const selectedItems = [];
+
+      selectedEls.forEach(cb => {
+        const index = parseInt(cb.dataset.index, 10);
+        if (!isNaN(index) && cart[index]) {
+          // push a copy of the item
+          selectedItems.push({ ...cart[index] });
+        }
+      });
+
+      // Save all selected items
+      sessionStorage.setItem(CHECKOUT_KEY, JSON.stringify(selectedItems));
+
+      // Redirect to address page
+      window.location.href = "addresses.html";
     });
 
-    // Remove
-    card.querySelector(".remove-cart").addEventListener("click", () => {
-      cart.splice(index, 1);
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
-      renderCart();
+    }
+
+    // Attach listener for checkboxes
+    container.querySelectorAll(".cart-select").forEach(cb => {
+      cb.addEventListener("change", updateSummary);
     });
 
-    cartItemsContainer.appendChild(card);
+    // initialize summary
+    updateSummary();
+
+    updateNavbarCountsSafe();
+  }
+
+  window.renderCart = renderCart;
+
+  // --- inside cart.js after rendering ---
+  function attachCheckoutHandler() {
+    const checkoutBtn = document.querySelector(".btn-checkout");
+    if (!checkoutBtn) return;
+
+    checkoutBtn.addEventListener("click", () => {
+      // collect only selected items
+      const selectedEls = document.querySelectorAll(".cart-select:checked");
+      if (!selectedEls.length) {
+        alert("Please select at least one product to checkout.");
+        return;
+      }
+
+      const cart = readCart();
+      const selectedItems = [];
+
+      selectedEls.forEach(cb => {
+        const index = parseInt(cb.dataset.index, 10);
+        if (!isNaN(index) && cart[index]) {
+          selectedItems.push(cart[index]);
+        }
+      });
+
+      // save to sessionStorage
+      sessionStorage.setItem("checkout_items", JSON.stringify(selectedItems));
+
+      // go to addresses
+      window.location.href = "addresses.html";
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderCart();
   });
-
-  // ✅ Save cart back after fixing quantity defaults
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-
-  cartSummary.innerHTML = `
-    <h3>Total: ₹${total}</h3>
-    <button class="btn-checkout">Proceed to Checkout</button>
-  `;
-
-  updateCartCount();
-}
-
-// ==============================
-// CART COUNT (Navbar)
-// ==============================
-function updateCartCount() {
-  const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-  const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-  document.getElementById("cartCount").textContent = count;
-}
-
-// ==============================
-// WISHLIST COUNT (Navbar)
-// ==============================
-function updateWishlistCount() {
-  const wishlist = JSON.parse(localStorage.getItem(WISHLIST_KEY)) || [];
-  document.getElementById("wishlistCount").textContent = wishlist.length;
-}
+})();

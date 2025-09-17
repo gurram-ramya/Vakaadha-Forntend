@@ -11,6 +11,7 @@
   <!-- AOS (local copy to satisfy CSP) -->
   <!-- <link rel="stylesheet" href="vendor/aos/aos.css"/> -->
   <link href="https://fonts.googleapis.com/css2?family=Megrim&display=swap" rel="stylesheet"/>
+  <script src="./navbar.js"></script>
 </head>
 <body>
   <!-- HEADER -->
@@ -81,12 +82,7 @@
     <div class="product-row">
       <div class="product-card">
         <div class="product-actions">
-          <button class="wishlist-btn" onclick="addToWishlist({
-  id: 1,
-  name: 'Teddy Bear | Maroon Oversized Tee',
-  price: 1299,
-  image: './Images/teddy back maroon.jpg'
-})"><i class="far fa-heart"></i></button>
+          <button class="wishlist-btn"><i class="far fa-heart"></i></button>
           <button class="share-btn"><i class="fas fa-share-alt"></i></button>
         </div>
         <img src="./Images/teddy back maroon.jpg" alt="T-Shirt 1"/>
@@ -109,12 +105,7 @@
 
       <div class="product-card">
         <div class="product-actions">
-          <button class="wishlist-btn" onclick="addToWishlist({
-  id: 2,
-  name: 'Black Panther | Black Oversized Tee',
-  price: 1299,
-  image: './Images/black black panther back.jpg'
-})"><i class="far fa-heart"></i></button>
+          <button class="wishlist-btn"><i class="far fa-heart"></i></button>
           <button class="share-btn"><i class="fas fa-share-alt"></i></button>
         </div>
         <img src="./Images/black black panther back.jpg" alt="T-Shirt 2"/>
@@ -130,24 +121,14 @@
         </div>
 
         <div class="card-actions">
-          <button class="btn add-to-cart" onclick="addToCart({
-  id: 2,
-  name: 'Black Panther | Black Oversized Tee',
-  price: 1299,
-  image: './Images/black black panther back.jpg'
-})">Add to Cart</button>
+          <button class="btn add-to-cart">Add to Cart</button>
           <button class="btn buy-now">Buy Now</button>
         </div>
       </div>
 
       <div class="product-card">
         <div class="product-actions">
-          <button class="wishlist-btn" onclick="addToWishlist({
-  id: 3,
-  name: 'Porsche | Maroon Oversized Tee',
-  price: 1399,
-  image: './Images/porsche maroon back.jpg'
-})"><i class="far fa-heart"></i></button>
+          <button class="wishlist-btn"><i class="far fa-heart"></i></button>
           <button class="share-btn"><i class="fas fa-share-alt"></i></button>
         </div>
         <img src="./Images/porsche maroon back.jpg" alt="T-Shirt 3"/>
@@ -170,12 +151,7 @@
 
       <div class="product-card">
         <div class="product-actions">
-          <button class="wishlist-btn" onclick="addToWishlist({
-  id: 4,
-  name: 'Street Mode On | Black Oversized Tee',
-  price: 1249,
-  image: './Images/black street mode front.jpg'
-})"><i class="far fa-heart"></i></button>
+          <button class="wishlist-btn"><i class="far fa-heart"></i></button>
           <button class="share-btn"><i class="fas fa-share-alt"></i></button>
         </div>
         <img src="./Images/black street mode front.jpg" alt="T-Shirt 4"/>
@@ -365,7 +341,7 @@
   </div>
 
   <!-- Toast container -->
-  <div id="toast-container"></div>
+  <!-- <div id="toast-container"></div> -->
 
   <!-- Scripts (CSP-compliant) -->
   <!-- AOS (local) -->
@@ -405,6 +381,6 @@
     });
   </script>
   <script src="./script.js"></script>
-  <script src="./wishlist.js"></script>
+  <!-- <script src="./wishlist.js"></script> -->
 </body>
 </html>

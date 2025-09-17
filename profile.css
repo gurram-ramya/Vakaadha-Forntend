@@ -422,3 +422,54 @@ body {
   .about-buttons { justify-content: center; }
   .social-icons { justify-content: center; }
 }
+
+/* === PROFILE DROPDOWN MENU === */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #D6C0B3;
+  min-width: 15vw;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 1000;
+  text-align: left;
+  border-radius: 4px;
+}
+
+.dropdown-content hr{
+  margin: auto;
+  width: 90%;
+  border-top: 1px solid #493628;
+}
+
+.dropdown-content a {
+  color: black;
+  /* padding: 10px 14px; */
+  text-decoration: none;
+  display: block;
+  /* border: solid 1px black; */
+  font-size: 14px;
+  width: 90%;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-divider {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 6px 0;
+}
+.hidden {
+  display: none;
+}
