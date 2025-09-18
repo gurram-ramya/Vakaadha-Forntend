@@ -456,27 +456,58 @@ window.buyNow = (product) => buyNow(product, event?.target || null);
       return;
     }
 
+    // // wishlist button inside card
+    // const wishBtn = e.target.closest(".wishlist-btn");
+    // if (wishBtn) {
+    //   const card = wishBtn.closest(".product-card");
+    //   const product = extractProduct(card, wishBtn);
+
+    //   // check if already in wishlist
+    //   const wishlist = read(WISHLIST_KEY);
+    //   const exists = wishlist.find(p => p.id === product.id);
+
+    //   const icon = wishBtn.querySelector("i");
+
+    //   if (exists) {
+    //     showToast("⚠️ Already in wishlist", "#ff9800");
+    //     if (icon) { icon.classList.remove("far"); icon.classList.add("fas"); }
+    //   } else {
+    //     addToWishlist(product);
+    //     if (icon) { icon.classList.remove("far"); icon.classList.add("fas"); }
+    //   }
+    //   return;
+    // }
+
     // wishlist button inside card
     const wishBtn = e.target.closest(".wishlist-btn");
     if (wishBtn) {
       const card = wishBtn.closest(".product-card");
       const product = extractProduct(card, wishBtn);
-
-      // check if already in wishlist
       const wishlist = read(WISHLIST_KEY);
-      const exists = wishlist.find(p => p.id === product.id);
 
       const icon = wishBtn.querySelector("i");
 
-      if (exists) {
-        showToast("⚠️ Already in wishlist", "#ff9800");
-        if (icon) { icon.classList.remove("far"); icon.classList.add("fas"); }
+      // Check if product exists
+      const index = wishlist.findIndex(p => p.id === product.id);
+
+      if (index > -1) {
+        // Already exists -> remove
+        wishlist.splice(index, 1);
+        write(WISHLIST_KEY, wishlist);
+        updateNavbarCountsSafe();
+        if (icon) { icon.classList.remove("fas"); icon.classList.add("far"); }
+        showToast("Removed from wishlist", "#ff4d4d");
       } else {
-        addToWishlist(product);
+        // Doesn't exist -> add
+        wishlist.push(product);
+        write(WISHLIST_KEY, wishlist);
+        updateNavbarCountsSafe();
         if (icon) { icon.classList.remove("far"); icon.classList.add("fas"); }
+        showToast("❤️ Added to wishlist");
       }
       return;
     }
+
 
 
     // add-to-cart buttons
@@ -543,3 +574,41 @@ window.buyNow = (product) => buyNow(product, event?.target || null);
 
 })();
 
+//SHARE BUTTONS
+document.querySelectorAll(".share-btn").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    
+    // Get product info
+    const card = e.target.closest(".product-card");
+    const productName = card.querySelector("h3").innerText;
+    const productUrl = window.location.origin + "/product.html?name=" + encodeURIComponent(productName);
+
+    // Native Web Share API (mobile)
+    if (navigator.share) {
+      navigator.share({
+        title: productName,
+        text: "Check out this product on VAKAADHA!",
+        url: productUrl
+      }).catch(err => console.log("Share cancelled:", err));
+    } else {
+      // Fallback → open custom share modal
+      openModal("shareModal");
+
+      // Set share links
+      document.getElementById("share-whatsapp").href =
+        `https://wa.me/?text=${encodeURIComponent(productName + " - " + productUrl)}`;
+      document.getElementById("share-facebook").href =
+        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+      document.getElementById("share-twitter").href =
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(productName)}&url=${encodeURIComponent(productUrl)}`;
+
+      // Copy link
+      document.getElementById("copy-link").onclick = () => {
+        navigator.clipboard.writeText(productUrl).then(() => {
+          alert("Link copied to clipboard!");
+        });
+      };
+    }
+  });
+});

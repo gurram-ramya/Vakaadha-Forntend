@@ -135,7 +135,7 @@ h2 {
    Address Entries
 ========================= */
 .address-entry {
-  display: flex;
+  /* display: flex; */
   align-items: center;
   justify-content: space-between;
   border: 2px solid #ccc;
@@ -260,7 +260,7 @@ button:hover {
 }
 
 #addressForm input {
-  width: 100%;
+  width: 90%;
   padding: 10px;
   margin-top: 6px;
   border: 1px solid #ccc;

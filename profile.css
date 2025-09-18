@@ -197,6 +197,10 @@ body {
   color: #fff;
 }
 
+.profile-container input::placeholder {
+  color: #ddd;
+}
+
 .profile-container button {
   padding: 12px;
   background: #493628;

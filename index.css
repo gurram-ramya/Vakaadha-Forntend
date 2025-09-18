@@ -1270,3 +1270,35 @@ body {
     transform: translateX(120%);
   }
 }
+
+
+/* ==========
+ Share Modal
+========== */
+.share-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.share-options a, 
+.share-options button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #f3f3f3;
+  color: #333;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.share-options a:hover,
+.share-options button:hover {
+  background: #ddd;
+}
